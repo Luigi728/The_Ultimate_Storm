@@ -1,0 +1,8 @@
+﻿Card,Count,W/m^2,Roll
++5 W/m^2,20,5,FALSE
++10 W/m^2,16,10,FALSE
++15 W/m^2,12,15,FALSE
++20 W/m^2,8,20,FALSE
++25 W/m^2,6,25,FALSE
++30 W/m^2,3,30,FALSE
++ ? W/m^2,10,5,TRUE

@@ -1,0 +1,46 @@
+City,City Name,Lon,Lat,Type,Initial Budget,Landfall Cost per kt,Label Loc,Label Colour
+HKG,Hong Kong,115,23,Mega,1500,5,2,white
+TPE,Taipei,121,25,Mega,1500,5,1,white
+HAN,Hanoi,105,21,Mega,1500,5,4,black
+BKK,Bangkok,101,15,Mega,1500,5,3,black
+SIN,Singapore,103,3,Mega,1500,5,4,black
+PEK,Beijing,117,41,Mega,1500,5,2,white
+SHA,Shanghai,121,31,Mega,1500,5,1,white
+SEO,Seoul,127,37,Mega,1500,5,4,white
+OSA,Osaka,135,35,Mega,1500,5,2,white
+TYO,Tokyo,141,37,Mega,1500,5,2,white
+FOC,Fuzhou,117,27,Metro,750,3,3,white
+CAN,Guangzhou,113,25,Metro,750,3,4,white
+NNG,Nanning,109,25,Metro,750,3,3,white
+SGN,Saigon,107,11,Metro,750,3,4,black
+KUL,Kuala Lumpur,101,5,Metro,750,3,4,black
+TJN,Tianjin,119,39,Metro,750,3,4,white
+NKG,Nanjing,119,33,Metro,750,3,4,black
+PYY,Pyongyang,125,39,Metro,750,3,4,white
+NGO,Nagoya,139,35,Metro,750,3,2,white
+MNL,Manila,121,13,Metro,750,3,1,black
+SYA,Sanya,111,19,Regular,400,2,2,white
+DAN,Da Nang,107,17,Regular,400,2,2,black
+PNH,Phnom Penh,105,13,Regular,400,2,4,black
+PHU,Phuket,99,9,Regular,400,2,4,black
+BRU,Brunei,113,5,Regular,400,2,2,white
+VLA,Vladivostok,131,43,Regular,400,2,2,white
+BUS,Busan,129,35,Regular,400,2,4,black
+DLN,Dalian,121,41,Regular,400,2,2,white
+QDO,Qingdao,121,37,Regular,400,2,2,white
+WNZ,Wenzhou,119,29,Regular,400,2,2,white
+SAP,Sapporo,141,43,Regular,400,2,2,white
+FUK,Fukuoka,131,33,Regular,400,2,1,white
+OKA,Okinawa,127,27,Regular,400,2,3,white
+KHH,Kaohsiung,121,23,Regular,400,2,1,black
+CEB,Cebu,123,9,Regular,400,2,1,black
+AMM,Amami,129,29,Town,100,1,3,white
+MMY,Miyakojima,125,25,Town,100,1,1,black
+BAG,Baguio,121,17,Town,100,1,1,black
+KKI,Kota Kinabalu,117,7,Town,100,1,2,black
+PAL,Palau,135,9,Town,100,1,4,black
+IWO,Iwojima,143,27,Town,100,1,2,black
+SPN,Saipan,145,19,Town,100,1,2,black
+GUM,Guam,145,13,Town,100,1,2,black
+YAP,Yap,139,11,Town,100,1,4,black
+TKK,Chuuk,151,9,Town,100,1,4,black
