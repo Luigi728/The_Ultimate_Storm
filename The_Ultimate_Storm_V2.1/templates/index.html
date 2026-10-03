@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 
+
 <html>
 <head>
     <title>The Ultimate Storm</title>
@@ -8,15 +9,149 @@
 <body>
 
     <h1>The Ultimate Storm</h1>
+    <h2>Game Setup</h2>
 
-    <h2>Round {{ Game_State["Round"] }}</h2>
 
-    <p>
-        Ocean ACE Remaining:
-        {{ Game_State["Ocean ACE"] }}
-    </p>
 
-    <button>Start Game</button>
+    <!-- Enter player names and select colours -->
+    <form action="/start_game" method="post">
+
+        <!-- Select number of players -->
+        <label for="n_players">Number of Players:</label>
+        <select id="n_players" name="n_players">
+            <option value="2">2 Players</option>
+            <option value="3">3 Players</option>
+            <option value="4">4 Players</option>
+            <option value="5">5 Players</option>
+        </select>
+        <br><br>
+
+        <!-- Player 1 -->
+        <div id="player_1">
+            <h3>Player 1</h3>
+
+            <label>Name:</label>
+            <input type="text" name="player_1_name" required>
+
+            <label>Colour:</label>
+            <select name="player_1_colour">
+                <option value="limegreen">Green</option>
+                <option value="deepskyblue">Blue</option>
+                <option value="red">Red</option>
+                <option value="darkorange">Orange</option>
+                <option value="gold">Yellow</option>
+                <option value="magenta">Pink</option>
+                <option value="darkviolet">Purple</option>
+                <option value="white">White</option>
+            </select>
+        </div>
+
+        <!-- Player 2 -->
+        <div id="player_2">
+            <h3>Player 2</h3>
+
+            <label>Name:</label>
+            <input type="text" name="player_2_name" required>
+
+            <label>Colour:</label>
+            <select name="player_2_colour">
+                <option value="limegreen">Green</option>
+                <option value="deepskyblue">Blue</option>
+                <option value="red">Red</option>
+                <option value="darkorange">Orange</option>
+                <option value="gold">Yellow</option>
+                <option value="magenta">Pink</option>
+                <option value="darkviolet">Purple</option>
+                <option value="white">White</option>
+            </select>
+        </div>
+
+        <!-- Player 3 -->
+        <div id="player_3">
+            <h3>Player 3</h3>
+
+            <label>Name:</label>
+            <input type="text" name="player_3_name">
+
+            <label>Colour:</label>
+            <select name="player_3_colour">
+                <option value="limegreen">Green</option>
+                <option value="deepskyblue">Blue</option>
+                <option value="red">Red</option>
+                <option value="darkorange">Orange</option>
+                <option value="gold">Yellow</option>
+                <option value="magenta">Pink</option>
+                <option value="darkviolet">Purple</option>
+                <option value="white">White</option>
+            </select>
+        </div>
+
+        <!-- Player 4 -->
+        <div id="player_4">
+            <h3>Player 4</h3>
+
+            <label>Name:</label>
+            <input type="text" name="player_4_name">
+
+            <label>Colour:</label>
+            <select name="player_4_colour">
+                <option value="limegreen">Green</option>
+                <option value="deepskyblue">Blue</option>
+                <option value="red">Red</option>
+                <option value="darkorange">Orange</option>
+                <option value="gold">Yellow</option>
+                <option value="magenta">Pink</option>
+                <option value="darkviolet">Purple</option>
+                <option value="white">White</option>
+            </select>
+        </div>
+
+        <!-- Player 5 -->
+        <div id="player_5">
+            <h3>Player 5</h3>
+
+            <label>Name:</label>
+            <input type="text" name="player_5_name">
+
+            <label>Colour:</label>
+            <select name="player_5_colour">
+                <option value="limegreen">Green</option>
+                <option value="deepskyblue">Blue</option>
+                <option value="red">Red</option>
+                <option value="darkorange">Orange</option>
+                <option value="gold">Yellow</option>
+                <option value="magenta">Pink</option>
+                <option value="darkviolet">Purple</option>
+                <option value="white">White</option>
+            </select>
+        </div>
+        <br>
+        <button type="submit">Start Game</button>
+    </form>
+
+
+
+    <!-- Select number of players -->
+    <script>
+    const PlayerSelector = document.getElementById("n_players");
+    function UpdatePlayers() {
+        const nPlayers = parseInt(PlayerSelector.value);
+        for (let i = 1; i <= 5; i++) {
+            const PlayerDiv = document.getElementById(`player_${i}`);
+            const NameInput = PlayerDiv.querySelector('input[type="text"]');
+            if (i <= nPlayers) {
+                PlayerDiv.style.display = "block";
+                NameInput.required = true;
+            }
+            else {
+                PlayerDiv.style.display = "none";
+                NameInput.required = false;
+            }
+        }
+    }
+    PlayerSelector.addEventListener("change", UpdatePlayers);
+    UpdatePlayers();
+    </script>
 
 </body>
 </html>

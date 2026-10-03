@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>The Ultimate Storm</title>
+</head>
+
+<body>
+
+    <h1>The Ultimate Storm</h1>
+
+    <!-- Show game board -->
+    <img
+    class="game-board"
+    src="{{ url_for('static', filename='images/Game_Map_Pacific.png') }}"
+    alt="Game Board"
+    >
+
+    <style>
+    .game-board {width: 100%; height: auto;}
+    </style>
+
+    <!-- Show round and current ocean ACE -->
+    <h2>
+        Round {{ Game_State["Round"] }}
+    </h2>
+    <p>
+        Ocean ACE:
+        {{ Game_State["Ocean ACE"] }}
+    </p>
+
+    <!-- Show player information -->
+    <h2>Players</h2>
+    {% for Player, Data in Player_Data.items() %}
+        <h3>{{ Player }}</h3>
+        <p>
+            Colour:
+            {{ Data["Colour"] }}
+        </p>
+        <p>
+            Genesis Point:
+            {{ Data["Genesis Point"] }}
+        </p>
+        <p>
+            Position:
+            {{ Data["Lon"] }},
+            {{ Data["Lat"] }}
+        </p>
+        <p>
+            Hand:
+            {{ Data["Hand"] }}
+        </p>
+    {% endfor %}
+
+</body>
+
+
+</html>
