@@ -77,38 +77,6 @@ def Dice(n):
     Result = sum(Rolls)
     return (Result)
 
-# Plot current board
-def Plot_Current_Board(Player_Data, Show):
-    #Plot_Board(Cities_DF, Genesis_DF, Lon_Grid, Lat_Grid, Map_Grid, C_Map)
-    Position_Groups = {}
-    for Player in Player_Data:
-        Position = (Player_Data[Player]["Lon"], Player_Data[Player]["Lat"])
-        if Position not in Position_Groups:
-            Position_Groups[Position] = []
-        Position_Groups[Position].append(Player)
-
-    # Plot pawns
-    for Position, Players in Position_Groups.items():
-        Lon, Lat = Position
-        # No overlap
-        if len(Players) == 1:
-            Player = Players[0]
-            Place_Pawn(Lon, Lat, Player_Data[Player]["Colour"])
-        # Multiple players in same gridbox
-        else:
-            Offsets = [(0.25, 0.25), (-0.25, -0.25), (0.25, -0.25), (-0.25, 0.25)]
-            for i, Player in enumerate(Players):
-                Lon_Offset, Lat_Offset = Offsets[i]
-                Place_Pawn(Lon + Lon_Offset, Lat + Lat_Offset, Player_Data[Player]["Colour"])
-    if Show == True:
-        plt.show()
-
-# Place pawn on board
-def Place_Pawn(Lon, Lat, Colour):
-    plt.scatter(Lon, Lat, s=320, c=Colour, edgecolors='black', linewidths=2.8, zorder=5)
-    # Add halo around pawn
-    plt.scatter(Lon, Lat, s=620, c='white', edgecolors='black', linewidths=1.8, zorder=4)
-
 # Shuffle cards
 def Shuffle_Cards(Cards):
     # Build full deck
@@ -161,7 +129,7 @@ def Save_State(Player_Data, Game_State, Player_Data_History, Game_State_History)
 
 
 
-## Game Setup
+## Setup Game
 def Setup_Game(n_Players, Player_Names, Player_Colours):
     # Assign genesis points and decide play order
     Play_Order, Player_Data = Assign_Genesis_Points(Player_Names, Player_Colours, Genesis_DF, Map_DF)
@@ -207,3 +175,50 @@ def Setup_Game(n_Players, Player_Names, Player_Colours):
     Game_State_History = []
     Save_State(Player_Data, Game_State, Player_Data_History, Game_State_History)
     return (Player_Data, Game_State, Player_Data_History, Game_State_History)
+
+
+
+## Setup Pawns
+
+# Get pawns position
+def Get_Pawn_Positions(Player_Data):
+    Position_Groups = {}
+    for Player in Player_Data:
+        Position = (Player_Data[Player]["Lon"], Player_Data[Player]["Lat"])
+        if Position not in Position_Groups:
+            Position_Groups[Position] = []
+        Position_Groups[Position].append(Player)
+
+    Pawns = []
+    for Position, Players in Position_Groups.items():
+        Lon, Lat = Position
+        # One player in gridbox
+        if len(Players) == 1:
+            Player = Players[0]
+            X, Y = Board_Position(Lon, Lat)
+            Pawns.append({"Player": Player, "X": X, "Y": Y, "Colour": Player_Data[Player]["Colour"]})
+
+        # Multiple players in same gridbox
+        else:
+            Offsets = [(0.25, 0.25), (-0.25, -0.25), (0.25, -0.25), (-0.25, 0.25), (0, 0)]
+            for i, Player in enumerate(Players):
+                Lon_Offset, Lat_Offset = Offsets[i]
+                X, Y = Board_Position(Lon + Lon_Offset, Lat + Lat_Offset)
+                Pawns.append({"Player": Player, "X": X, "Y": Y, "Colour": Player_Data[Player]["Colour"]})
+    return (Pawns)
+
+# Calculate pawns position on board
+def Board_Position(Lon, Lat):
+    Min_Lon = 98
+    Max_Lon = 160
+    Min_Lat = 0
+    Max_Lat = 44
+    Left = 2.5
+    Right = 98.5
+    Top = 1.0
+    Bottom = 96.7
+    Lon_Frac = ((Lon - Min_Lon) / (Max_Lon - Min_Lon))
+    Lat_Frac = ((Max_Lat - Lat) / (Max_Lat - Min_Lat))
+    X = Left + Lon_Frac * (Right - Left)
+    Y = Top + Lat_Frac * (Bottom - Top)
+    return (X, Y)

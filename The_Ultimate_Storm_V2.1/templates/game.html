@@ -10,15 +10,29 @@
     <h1>The Ultimate Storm</h1>
 
     <!-- Show game board -->
-    <img
-    class="game-board"
-    src="{{ url_for('static', filename='images/Game_Map_Pacific.png') }}"
-    alt="Game Board"
-    >
+    <div class="board-container">
+        <img
+            class="game-board"
+            src="{{ url_for('static', filename='images/Game_Map_Pacific.png') }}"
+            alt="Game Board"
+        >
+        {% for Pawn in Pawns %}
+            <div
+                class="pawn"
+                style="left: {{ Pawn['X'] }}%; top: {{ Pawn['Y'] }}%; background-color: {{ Pawn['Colour'] }}"
+                title="{{ Pawn['Player'] }}"
+            ></div>
+        {% endfor %}
+    </div>
 
     <style>
-    .game-board {width: 100%; height: auto;}
+    .board-container {position: relative; width: 80vw; max-width: 1200px; margin: 20px auto}
+    .game-board {display: block; width: 100%; height: auto}
+    .pawn {position: absolute; width: 18px; height: 18px; border-radius: 50%; border: 3px solid black; 
+        outline: 4px solid white; transform: translate(-50%, -50%); z-index: 5}
     </style>
+
+
 
     <!-- Show round and current ocean ACE -->
     <h2>

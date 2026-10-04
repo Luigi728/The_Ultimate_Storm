@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from game import Setup_Game
+from game import Setup_Game, Get_Pawn_Positions
 
 app = Flask(__name__)
 Player_Data = None
@@ -43,17 +43,13 @@ def Start_Game():
     # Setup game
     (Player_Data, Game_State, Player_Data_History, Game_State_History) = Setup_Game(n_Players, Player_Names, Player_Colours)
 
+    # Setup pawns
+    Pawns = Get_Pawn_Positions(Player_Data)
+
     # Display game
-    return render_template("game.html", Player_Data=Player_Data, Game_State=Game_State)
-
-
-# Update ACE
-@app.route("/test_ace", methods=["POST"])
-def Test_ACE():
-    Game_State["Ocean ACE"] -= 50
-    return render_template("game.html", Game_State=Game_State)
+    return render_template("game.html", Player_Data=Player_Data, Game_State=Game_State, Pawns=Pawns)
 
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5000)
