@@ -10,9 +10,8 @@
     <h1>The Ultimate Storm</h1>
     <h2>Game Setup</h2>
 
-
     <!-- Enter player names and select colours -->
-    <form action="/start_game" method="post">
+    <form action="/roll_dice" method="post">
 
         <!-- Select number of players -->
         <label for="n_players">Number of Players:</label>
@@ -27,10 +26,8 @@
         <!-- Player 1 -->
         <div id="player_1">
             <h3>Player 1</h3>
-
             <label>Name:</label>
             <input type="text" name="player_1_name" required>
-
             <label>Colour:</label>
             <select name="player_1_colour">
                 <option value="limegreen">Green</option>
@@ -47,10 +44,8 @@
         <!-- Player 2 -->
         <div id="player_2">
             <h3>Player 2</h3>
-
             <label>Name:</label>
             <input type="text" name="player_2_name" required>
-
             <label>Colour:</label>
             <select name="player_2_colour">
                 <option value="limegreen">Green</option>
@@ -67,10 +62,8 @@
         <!-- Player 3 -->
         <div id="player_3">
             <h3>Player 3</h3>
-
             <label>Name:</label>
             <input type="text" name="player_3_name">
-
             <label>Colour:</label>
             <select name="player_3_colour">
                 <option value="limegreen">Green</option>
@@ -87,10 +80,8 @@
         <!-- Player 4 -->
         <div id="player_4">
             <h3>Player 4</h3>
-
             <label>Name:</label>
             <input type="text" name="player_4_name">
-
             <label>Colour:</label>
             <select name="player_4_colour">
                 <option value="limegreen">Green</option>
@@ -107,10 +98,8 @@
         <!-- Player 5 -->
         <div id="player_5">
             <h3>Player 5</h3>
-
             <label>Name:</label>
             <input type="text" name="player_5_name">
-
             <label>Colour:</label>
             <select name="player_5_colour">
                 <option value="limegreen">Green</option>
@@ -124,11 +113,38 @@
             </select>
         </div>
         <br>
-        <button type="submit">Start Game</button>
+
+        <!-- First stage: roll dice -->
+        <button type="submit">
+            Roll Dice
+        </button>
     </form>
 
 
-    <!-- Select number of players -->
+    <!-- Dice results -->
+    {% if Dice_Rolled %}
+        <hr>
+        <h2>Dice Rolls</h2>
+        {% for Message in Roll_Messages %}
+            <p>{{ Message }}</p>
+        {% endfor %}
+        <h2>Play Order</h2>
+        <ol>
+            {% for Player in Play_Order %}
+                <li>{{ Player }}</li>
+            {% endfor %}
+        </ol>
+
+        <!-- Second stage: start game -->
+        <form action="/start_game" method="post">
+            <button type="submit">
+                Start Game
+            </button>
+        </form>
+    {% endif %}
+
+
+    <!-- Show/hide player inputs -->
     <script>
     const PlayerSelector = document.getElementById("n_players");
     function UpdatePlayers() {

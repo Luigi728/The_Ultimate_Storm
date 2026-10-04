@@ -4,8 +4,6 @@ import numpy as np
 import pandas as pd
 import random
 
-
-
 ## Load Game Data
 
 # Open cities file
@@ -25,14 +23,13 @@ Map_DF.index = Map_DF.index.astype(int)
 Map_DF.columns = Map_DF.columns.astype(int)
 
 
-
-
 ## Initializing Game
 
 # Assign genesis points and create player data dictionary
 def Assign_Genesis_Points(Player_Names, Player_Colours, Genesis_DF, Map_DF):
     Taken_Positions = set()
     Player_Data = {}
+    Roll_Messages = []
     for Player in Player_Names:
         while True:
             
@@ -40,7 +37,8 @@ def Assign_Genesis_Points(Player_Names, Player_Colours, Genesis_DF, Map_DF):
             Roll = Dice(2)
             if Roll not in Taken_Positions:
                 Taken_Positions.add(Roll)
-                print (f"{Player} rolled {Roll} and is assigned genesis point {Roll}.")
+                Message = (f"{Player} rolled {Roll} and is assigned genesis point {Roll}.")
+                Roll_Messages.append(Message)
                 
                 # Find lat lon coordinates of genesis point
                 Genesis_Row = Genesis_DF[Genesis_DF["Point"] == Roll]
@@ -58,18 +56,15 @@ def Assign_Genesis_Points(Player_Names, Player_Colours, Genesis_DF, Map_DF):
                 
             # If roll result is already taken, roll again
             else:
-                print (f"{Player} rolled {Roll}, but genesis point {Roll} is already taken. Rolling again...")
+                Message = (f"{Player} rolled {Roll}, but genesis point {Roll} is already taken. Rolling again...")
+                Roll_Messages.append(Message)
     
     # Decide play order based on roll result
     Play_Order = sorted(Player_Names, key=lambda Name: Player_Data[Name]["Genesis Point"], reverse=True)
     Player_Data_Sorted = {Name: Player_Data[Name] for Name in Play_Order}
     for Order, Name in enumerate(Play_Order, start=1):
         Player_Data[Name]["Order"] = Order
-
-    # Print play order
-    Play_Order_Text = ", ".join(f"{i}. {Player}" for i, Player in enumerate(Play_Order, start=1))
-    print (f"Play Order: {Play_Order_Text}")
-    return (Play_Order, Player_Data_Sorted)
+    return (Play_Order, Player_Data_Sorted, Roll_Messages)
 
 # Roll dice
 def Dice(n):
@@ -127,15 +122,8 @@ def Save_State(Player_Data, Game_State, Player_Data_History, Game_State_History)
     Player_Data_History.append(copy.deepcopy(Player_Data))
     Game_State_History.append(copy.deepcopy(Game_State))
 
-
-
-## Setup Game
-def Setup_Game(n_Players, Player_Names, Player_Colours):
-    # Assign genesis points and decide play order
-    Play_Order, Player_Data = Assign_Genesis_Points(Player_Names, Player_Colours, Genesis_DF, Map_DF)
-
-    # Plot initial board
-    #Plot_Current_Board(Player_Data, True)
+# Setup game
+def Setup_Game(n_Players, Player_Data, Play_Order):
 
     # Create card lookup dictionary
     Card_Lookup = {}
@@ -169,16 +157,13 @@ def Setup_Game(n_Players, Player_Names, Player_Colours):
 
     # Setup game state
     Game_State = Setup_Game_State(n_Players, Ocean_ACE, Movement_Deck, Intensity_Deck, Action_Deck, Cities_DF)
+    Game_State["Play Order"] = Play_Order
 
     # Save player data and game state history
     Player_Data_History = []
     Game_State_History = []
     Save_State(Player_Data, Game_State, Player_Data_History, Game_State_History)
     return (Player_Data, Game_State, Player_Data_History, Game_State_History)
-
-
-
-## Setup Pawns
 
 # Get pawns position
 def Get_Pawn_Positions(Player_Data):
