@@ -1,7 +1,10 @@
-from flask import (Flask, render_template, request)
-from game import (Cities_DF, Genesis_DF, Map_DF, Assign_Genesis_Points, Setup_Game, Get_Pawn_Positions)
+from flask import (Flask, render_template, request, redirect, url_for, flash)
+from game import (Cities_DF, Genesis_DF, Map_DF, Assign_Genesis_Points, Setup_Game, Get_Pawn_Positions, 
+                  Get_Current_Player, Advance_Player, Start_Playing_Phase, Get_Playable_Cards, Play_Selected_Card, 
+                  Is_Card_Playable, Has_Effect)
 
 app = Flask(__name__)
+app.secret_key = "development-only-secret-key"
 Player_Data = None
 Game_State = None
 Play_Order = None
@@ -12,9 +15,12 @@ Pending_Player_Colours = None
 Player_Data_History = []
 Game_State_History = []
 
+
+# Display home
 @app.route("/")
 def Home():
     return (render_template("index.html"))
+
 
 # Roll dice to assign genesis points and play order
 @app.route("/roll_dice", methods=["POST"])
@@ -54,6 +60,7 @@ def Roll_Dice():
     return (render_template("index.html", n_Players=n_Players, Player_Names=Player_Names, Player_Colours=Player_Colours, 
                            Roll_Messages=Roll_Messages, Play_Order=Play_Order, Dice_Rolled=True))
 
+
 # Start game
 @app.route("/start_game", methods=["POST"])
 def Start_Game():
@@ -70,8 +77,61 @@ def Start_Game():
     # Setup pawns
     Pawns = Get_Pawn_Positions(Player_Data)
 
-    # Display game
-    return (render_template("game.html", Player_Data=Player_Data, Game_State=Game_State, Pawns=Pawns))
+    # Render game
+    return (Render_Game())
+
+
+# Display game
+@app.route("/game")
+def Game():
+    if Game_State is None:
+        return (redirect(url_for("Home")))
+    return (Render_Game())
+
+
+# Render game
+def Render_Game():
+    Current_Player = Get_Current_Player(Game_State)
+    Pawns = Get_Pawn_Positions(Player_Data)
+    Hand = Player_Data[Current_Player]["Hand"]
+    Playable_Indices = Get_Playable_Cards(Current_Player, Player_Data, Game_State)
+    return render_template("game.html", Player_Data=Player_Data, Game_State=Game_State, Pawns=Pawns, 
+                           Current_Player=Current_Player, Hand=Hand)
+
+
+# Play card
+@app.route("/play_card", methods=["POST"])
+def Play_Card():
+    global Player_Data
+    global Game_State
+    if Game_State is None:
+        return redirect(url_for("Home"))
+    Current_Player = Get_Current_Player(Game_State)
+
+    # Validate card index
+    try:
+        Card_Index = int(request.form["card_index"])
+    except (KeyError, ValueError):
+        return ("Invalid card selection.", 400)
+    
+    # Play selected card
+    Choice = request.form.get("direction")
+    Player_Data, Game_State, Message = Play_Selected_Card(Current_Player, Card_Index, Player_Data, Game_State, Choice)
+    flash(Message)
+
+    return (redirect(url_for("Game")))
+
+
+# End turn
+@app.route("/end_turn", methods=["POST"])
+def End_Turn():
+    global Game_State
+    if Game_State is None:
+        return (redirect(url_for("Home")))
+    Current_Player = Get_Current_Player(Game_State)
+    print(f"{Current_Player} ended their turn.")
+    Game_State = Advance_Player(Game_State)
+    return (redirect(url_for("Game")))
 
 
 

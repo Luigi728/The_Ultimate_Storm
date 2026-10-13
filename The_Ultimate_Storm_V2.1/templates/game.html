@@ -33,37 +33,137 @@
     </style>
 
 
-    <!-- Show round and current ocean ACE -->
-    <h2>
-        Round {{ Game_State["Round"] }}
-    </h2>
+    <!-- Show current turn -->
+    <h2>{{ Current_Player }}'s Playing Phase</h2>
     <p>
-        Ocean ACE:
-        {{ Game_State["Ocean ACE"] }}
+        Round {{ Game_State["Round"] }}
     </p>
+    <p>
+        Cards played:
+        {{ Player_Data[Current_Player]["Cards Played This Round"] | length }}
+        /
+        {{ Player_Data[Current_Player]["Max Cards"] }}
+    </p>
+    <form action="/play_card" method="post">
+        <label for="card_index">Choose a card:</label>
+        <select name="card_index" id="card_index">
+            {% for Card in Hand %}
+                <option
+                    value="{{ loop.index0 }}"
+                    {% if loop.index0 not in Playable_Indices %}
+                        disabled
+                    {% endif %}
+                >
+                    {{ Card }}
+                    {% if loop.index0 not in Playable_Indices %}
+                        (Cannot play)
+                    {% endif %}
+                </option>
+            {% endfor %
+        </select>
+        <button
+            type="submit"
+            {% if not Playable_Indices %}
+                disabled
+            {% endif %}
+        >
+            Play Card
+        </button>
+    </form>
 
-    <!-- Show player information -->
-    <h2>Players</h2>
-    {% for Player, Data in Player_Data.items() %}
-        <h3>{{ Player }}</h3>
-        <p>
-            Colour:
-            {{ Data["Colour"] }}
-        </p>
-        <p>
-            Genesis Point:
-            {{ Data["Genesis Point"] }}
-        </p>
-        <p>
-            Position:
-            {{ Data["Lon"] }},
-            {{ Data["Lat"] }}
-        </p>
-        <p>
-            Hand:
-            {{ Data["Hand"] }}
-        </p>
-    {% endfor %}
+    {% with Messages = get_flashed_messages() %}
+        {% if Messages %}
+            <div class="game-messages">
+                {% for Message in Messages %}
+                    <p>{{ Message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+
+    <!-- Play a card -->
+    <h3>Your Hand</h3>
+    <form action="/play_card" method="post">
+        <label for="card_index">Choose a card:</label>
+        <select name="card_index" id="card_index" data-hand='{{ Hand | tojson }}'>
+            {% for Card in Hand %}
+                <option value="{{ loop.index0 }}">
+                    {{ Card }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" {% if not Hand %}disabled{% endif %}>
+            Play Card
+        </button>
+    </form>
+
+
+    <!-- Movement wildcards -->
+    <form action="/play_card" method="post">
+        <label for="card_index">Choose a card:</label>
+        <select name="card_index" id="card_index">
+            {% for Card in Hand %}
+                <option
+                    value="{{ loop.index0 }}"
+                    {% if loop.index0 not in Playable_Indices %}
+                        disabled
+                    {% endif %}
+                >
+                    {{ Card }}
+                </option>
+            {% endfor %}
+        </select>
+        <div id="direction_container" style="display: none;">
+            <label for="direction">Choose direction:</label>
+            <select name="direction" id="direction">
+                <option value="W">West</option>
+                <option value="E">East</option>
+                <option value="N">North</option>
+                <option value="S">South</option>
+            </select>
+        </div>
+        <button type="submit">Play Card</button>
+    </form>
+
+    <script>
+        const CardSelector = document.getElementById("card_index");
+        const DirectionContainer = document.getElementById("direction_container");
+        const DirectionSelector = document.getElementById("direction");
+        const PlayerHand = JSON.parse(CardSelector.dataset.hand);
+        function UpdateDirectionOptions() {
+            const Card = Hand[parseInt(CardSelector.value)];
+            const WildcardOptions = {
+                "W/E 1": ["W", "E"],
+                "N/S 1": ["N", "S"],
+                "W/E/N/S 1": ["W", "E", "N", "S"]
+            };
+            if (Card in WildcardOptions) {
+                DirectionContainer.style.display = "block";
+                const Options = WildcardOptions[Card];
+                DirectionSelector.innerHTML = "";
+                for (const Direction of Options) {
+                    const Option = document.createElement("option");
+                    Option.value = Direction;
+                    Option.textContent = Direction;
+                    DirectionSelector.appendChild(Option);
+                }
+            } else {
+                DirectionContainer.style.display = "none";
+            }
+        }
+        CardSelector.addEventListener("change", UpdateDirectionOptions);
+        UpdateDirectionOptions();
+    </script>
+    
+
+    <!-- End turn -->
+    <form action="/end_turn" method="post">
+        <button type="submit">
+            End Turn
+        </button>
+    </form>
 
 </body>
 
